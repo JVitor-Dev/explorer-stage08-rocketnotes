@@ -8,9 +8,9 @@
  *
  * se for precisar criar mais de 5 metodos é melhor criar um controller separado
  */
-
 const AppError = require('../utils/AppError')
 const sqliteConnection = require('../database/sqlite')
+const { hash } = require('bcrypt')
 
 class UserController {
   async create(request, response) {
@@ -23,14 +23,20 @@ class UserController {
     )
 
     if (checkUserExists) {
+      console.log(
+        `Email: ${checkUserExists.email}, já cadastrado para: ${checkUserExists.name}`
+      )
       throw new AppError('Email já em uso.')
     }
+
+    const hashedPassowrd = await hash(senha, 8)
+
     await database.run(
       'INSERT INTO users (name, email, password) VALUES (?,?,?)',
-      [name, email, senha]
+      [name, email, hashedPassowrd]
     )
 
-    return response.status(201).json({ message: 'User created' })
+    return response.status(201).json()
   }
 }
 
