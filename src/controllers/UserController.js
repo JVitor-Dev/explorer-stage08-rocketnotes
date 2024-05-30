@@ -8,7 +8,7 @@
  *
  * se for precisar criar mais de 5 metodos é melhor criar um controller separado
  */
-const AppError = require('../utils/AppError')
+const AppError = require('../utils/AppError.js')
 const sqliteConnection = require('../database/sqlite')
 const { hash } = require('bcrypt')
 
@@ -23,9 +23,6 @@ class UserController {
     )
 
     if (checkUserExists) {
-      console.log(
-        `Email: ${checkUserExists.email}, já cadastrado para: ${checkUserExists.name}`
-      )
       throw new AppError('Email já em uso.')
     }
 
