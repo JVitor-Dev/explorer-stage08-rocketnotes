@@ -1,5 +1,3 @@
-const AppError = require('../utils/AppError')
-
 /**
  * máximo 5 funções
  * index - GET para listar vários registros.
@@ -11,15 +9,28 @@ const AppError = require('../utils/AppError')
  * se for precisar criar mais de 5 metodos é melhor criar um controller separado
  */
 
+const AppError = require('../utils/AppError')
+const sqliteConnection = require('../database/sqlite')
+
 class UserController {
-  create(request, response) {
+  async create(request, response) {
     const { name, email, senha } = request.body
 
-    if (!name) {
-      throw new AppError('Nome é obrigatório')
-    }
+    const database = await sqliteConnection()
+    const checkUserExists = await database.get(
+      'SELECT * FROM users WHERE email = (?)',
+      [email]
+    )
 
-    response.status(201).json({ name, email, senha })
+    if (checkUserExists) {
+      throw new AppError('Email já em uso.')
+    }
+    await database.run(
+      'INSERT INTO users (name, email, password) VALUES (?,?,?)',
+      [name, email, senha]
+    )
+
+    return response.status(201).json({ message: 'User created' })
   }
 }
 
