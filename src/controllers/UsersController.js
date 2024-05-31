@@ -8,12 +8,12 @@
  *
  * se for precisar criar mais de 5 metodos é melhor criar um controller separado
  */
-const { hash } = require('bcrypt')
+const { hash, compare } = require('bcrypt')
 const AppError = require('../utils/AppError')
 const sqliteConnection = require('../database/sqlite')
 const { application } = require('express')
 
-class UserController {
+class UsersController {
   async create(request, response) {
     try {
       const { name, email, password } = request.body
@@ -43,7 +43,7 @@ class UserController {
 
   async update(request, response) {
     try {
-      const { name, email } = request.body
+      const { name, email, password, old_password } = request.body
       const { id } = request.params
 
       const database = await sqliteConnection()
@@ -67,21 +67,38 @@ class UserController {
       user.name = name
       user.email = email
 
+      if (password && !old_password) {
+        throw new AppError(
+          'Você precisa informa a senha antiga para redifinir a nova'
+        )
+      }
+
+      if (password && old_password) {
+        const checkOldPassword = await compare(old_password, user.password)
+
+        if (!checkOldPassword) {
+          throw new AppError('A senha antiga está incorreta.')
+        }
+
+        user.password = await hash(password, 8)
+      }
+
       await database.run(
         `
       UPDATE users SET
       name = ?,
       email = ?,
+      passord = ?,
       updated_at = ?
       WHERE id = ?`,
-        [user.name, user.email, new Date(), id]
+        [user.name, user.email, user.password, new Date(), id]
       )
 
       return response.json()
     } catch (error) {
-      return response.status(400).json({ error: error.message })
+      return response.status(400).json({ error: 'error catch' })
     }
   }
 }
 
-module.exports = UserController
+module.exports = UsersController
