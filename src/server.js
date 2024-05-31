@@ -1,4 +1,4 @@
-require('express-async-error')
+require('express-async-errors')
 const migrationsRun = require('./database/sqlite/migrations')
 const AppError = require('./utils/AppError')
 
@@ -24,9 +24,9 @@ app.use((error, request, response, next) => {
 
   return response.status(500).json({
     status: 'error',
-    message: 'Internal Server Error'
+    message: 'Internal server error'
   })
 })
 
 const PORT = 3333
-app.listen(PORT, () => console.log(`Server is running at Port ${PORT}`))
+app.listen(PORT, () => console.log(`Server is running on Port ${PORT}`))
