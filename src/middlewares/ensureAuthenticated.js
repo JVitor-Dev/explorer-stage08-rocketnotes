@@ -4,7 +4,7 @@ const authConfigs = require('../configs/auth')
 
 function ensureAuthenticated(request, response, next) {
   // pegando dados do token do usuário dentro do cabeçalho (header) da requisição
-  const authHeader = request.header.authorization
+  const authHeader = request.headers.authorization
 
   // verificando se o token existe
   if (!authHeader) {
@@ -18,7 +18,7 @@ function ensureAuthenticated(request, response, next) {
     // verificando se o token é válido. E apelidando como "user_id"
     const { sub: user_id } = verify(token, authConfigs.jwt.secret)
 
-    // criando propriedade que nn existia na requisição e chamando ela de "user" e criando outra propriedade chamada de id, voltando ela para um número, que o "user_id"
+    // criando propriedade que nn existia na requisição e chamando ela de "user" e criando outra propriedade chamada de id, voltando ela para um número, que é o "user_id" que foi pego de dentro do token.
     request.user = {
       id: Number(user_id)
     }
