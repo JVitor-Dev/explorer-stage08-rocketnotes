@@ -4,7 +4,7 @@ const crypto = require('crypto') // gerar uma hash no nome do arquivo do usuári
 
 // informação como configurações
 const TMP_FOLDER = path.resolve(__dirname, '..', '..', 'tmp') //onde recebe o arquivo
-const UPLOADS_FOLDER = path.resolve(__dirname, 'uploads') //onde ficará armazenado o arquivo
+const UPLOADS_FOLDER = path.resolve(TMP_FOLDER, 'uploads') //onde ficará armazenado o arquivo, pasta "uploads" dentro da pasta tmp
 
 const MULTER = {
   storage: multer.diskStorage({
