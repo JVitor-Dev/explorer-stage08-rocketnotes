@@ -4,11 +4,13 @@ const multer = require('multer') // carregar imagem
 const uploadConfig = require('../configs/upload') //configurações do upload
 
 const UsersController = require('../controllers/UsersController')
+const UsersAvatarController = require('../controllers/UserAvatarController')
 
 const usersRoutes = Router()
 const upload = multer(uploadConfig.MULTER)
 
 const usersController = new UsersController()
+const usersAvatarController = new UsersAvatarController()
 
 usersRoutes.post('/', usersController.create)
 usersRoutes.put('/', ensureAuthenticated, usersController.update)
@@ -16,10 +18,7 @@ usersRoutes.patch(
   '/avatar',
   ensureAuthenticated,
   upload.single('avatar'),
-  (req, res) => {
-    console.log(req.file.filename)
-    res.json('arquivo enviado')
-  }
+  usersAvatarController.update
 )
 
 module.exports = usersRoutes

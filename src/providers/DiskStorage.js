@@ -7,7 +7,7 @@ class DiskStorage {
     await fs.promises.rename(
       //mudar o arquivo de lugar - 'rename' renomear ou mover arquivos
       path.resolve(uploadConfig.TMP_FOLDER, file),
-      path.resolve(uploadConfig.UPLOAD_FOLDER, file)
+      path.resolve(uploadConfig.UPLOADS_FOLDER, file)
     )
 
     return file
