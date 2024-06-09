@@ -3,12 +3,14 @@ const migrationsRun = require('./database/sqlite/migrations')
 const AppError = require('./utils/AppError')
 const uploadConfig = require('./configs/upload')
 
+const cors = require('cors') // conectando front com back end
 const express = require('express')
 const routes = require('./routes')
 
 migrationsRun()
 
 const app = express()
+app.use(cors()) //back atendendo o front
 app.use(express.json())
 
 app.use('/files', express.static(uploadConfig.UPLOADS_FOLDER))
